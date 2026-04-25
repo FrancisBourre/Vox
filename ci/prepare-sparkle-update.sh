@@ -222,7 +222,11 @@ copy_release_notes() {
     cat >"$SPARKLE_DIR/${archive_basename%.*}.md" <<NOTES
 # Vox $VOX_RELEASE_VERSION
 
-Internal Vox update.
+This update is ready to install.
+
+- Signed and notarized for macOS.
+- Delivered through Vox's Sparkle update feed.
+- Build $VOX_BUNDLE_VERSION.
 NOTES
     return 0
   fi

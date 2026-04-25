@@ -1,0 +1,51 @@
+name: Publish Sparkle Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      dmg_url:
+        description: "HTTPS URL to the signed and notarized Vox DMG"
+        required: true
+        type: string
+      release_notes_file:
+        description: "Optional path to committed .md, .html, or .txt release notes"
+        required: false
+        type: string
+      verify_public_access:
+        description: "Verify unauthenticated Sparkle appcast and ZIP access after publishing"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish Sparkle update
+    runs-on: macos-14
+    env:
+      VOX_DMG_URL: ${{ inputs.dmg_url }}
+      VOX_EXPECTED_FEED_URL: https://github.com/${{ github.repository }}/releases/latest/download/appcast.xml
+      VOX_EXPECTED_PUBLIC_ED_KEY: S45U2pv76YeCkCHHKTaZjLyDMa0soVvDyMRhJOo9JCc=
+      VOX_GITHUB_REPOSITORY: ${{ github.repository }}
+      VOX_RELEASE_NOTES_FILE: ${{ inputs.release_notes_file }}
+      VOX_SPARKLE_PRIVATE_ED_KEY: ${{ secrets.VOX_SPARKLE_PRIVATE_ED_KEY }}
+      VOX_VERIFY_PUBLIC_ACCESS: ${{ inputs.verify_public_access }}
+
+    steps:
+      - name: Check out update repository
+        uses: actions/checkout@v4
+
+      - name: Validate scripts and resolve Sparkle tools
+        run: |
+          bash -n ci/prepare-sparkle-update.sh ci/publish-github-release.sh
+          swift build
+
+      - name: Prepare signed Sparkle appcast
+        run: ./ci/prepare-sparkle-update.sh
+
+      - name: Publish GitHub release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./ci/publish-github-release.sh

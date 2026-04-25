@@ -77,7 +77,11 @@ download_dmg() {
     curl_args+=(--header "Authorization: Bearer $VOX_DMG_GITHUB_TOKEN")
   fi
 
-  curl --fail --location "${curl_args[@]}" --output "$output" "$DMG_URL"
+  if [ "${#curl_args[@]}" -gt 0 ]; then
+    curl --fail --location "${curl_args[@]}" --output "$output" "$DMG_URL"
+  else
+    curl --fail --location --output "$output" "$DMG_URL"
+  fi
   printf '%s\n' "$output"
 }
 

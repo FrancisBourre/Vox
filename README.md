@@ -34,6 +34,7 @@ Run the `Publish Sparkle Update` workflow manually with:
 | --- | --- | --- |
 | `dmg_url` | Yes | Public or authenticated HTTPS URL to the signed and notarized Vox DMG. |
 | `release_notes_file` | Optional | Path to committed `.md`, `.html`, or `.txt` release notes in this repository. |
+| `release_notes_url` | Optional | HTTPS URL to `.md`, `.html`, or `.txt` release notes. Used by the private Vox source wrapper. |
 | `verify_public_access` | Yes | Keep enabled for production. It verifies appcast and ZIP access without credentials. |
 
 The workflow publishes:
@@ -64,6 +65,7 @@ VOX_SPARKLE_PRIVATE_ED_KEY_FILE=/path/to/private-key.txt \
 VOX_EXPECTED_FEED_URL=https://github.com/FrancisBourre/Vox/releases/latest/download/appcast.xml \
 VOX_EXPECTED_PUBLIC_ED_KEY=S45U2pv76YeCkCHHKTaZjLyDMa0soVvDyMRhJOo9JCc= \
 VOX_GITHUB_REPOSITORY=FrancisBourre/Vox \
+VOX_RELEASE_NOTES_URL=https://example.com/Vox-0.2.0.md \
 ./ci/prepare-sparkle-update.sh
 ```
 

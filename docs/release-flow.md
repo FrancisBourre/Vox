@@ -23,8 +23,10 @@ The `Publish Sparkle Update` workflow runs on a macOS runner. It:
 4. validates `Info.plist`, Sparkle keys, bundle ID, version, architecture, framework staging, and executable rpath
 5. validates Developer ID signing, Gatekeeper acceptance, and stapled notarization tickets
 6. creates `Vox-<version>-<arch>.zip` with `ditto --keepParent`
-7. generates signed `appcast.xml` with Sparkle `generate_appcast`
-8. fails if the appcast is missing `sparkle:edSignature`
+7. copies committed release notes or downloads release notes from
+   `release_notes_url`, when provided
+8. generates signed `appcast.xml` with Sparkle `generate_appcast`
+9. fails if the appcast is missing `sparkle:edSignature`
 
 ## Publish Job
 

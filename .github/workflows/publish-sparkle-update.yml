@@ -11,6 +11,10 @@ on:
         description: "Optional path to committed .md, .html, or .txt release notes"
         required: false
         type: string
+      release_notes_url:
+        description: "Optional HTTPS URL to .md, .html, or .txt release notes"
+        required: false
+        type: string
       verify_public_access:
         description: "Verify unauthenticated Sparkle appcast and ZIP access after publishing"
         required: true
@@ -30,6 +34,7 @@ jobs:
       VOX_EXPECTED_PUBLIC_ED_KEY: S45U2pv76YeCkCHHKTaZjLyDMa0soVvDyMRhJOo9JCc=
       VOX_GITHUB_REPOSITORY: ${{ github.repository }}
       VOX_RELEASE_NOTES_FILE: ${{ inputs.release_notes_file }}
+      VOX_RELEASE_NOTES_URL: ${{ inputs.release_notes_url }}
       VOX_SPARKLE_PRIVATE_ED_KEY: ${{ secrets.VOX_SPARKLE_PRIVATE_ED_KEY }}
       VOX_VERIFY_PUBLIC_ACCESS: ${{ inputs.verify_public_access }}
 

@@ -216,9 +216,16 @@ validate_signing_and_notarization() {
 copy_release_notes() {
   local archive_basename="$1"
   local release_notes_file="${VOX_RELEASE_NOTES_FILE:-}"
+  local release_notes_url="${VOX_RELEASE_NOTES_URL:-}"
   local extension
+  local output
+  local curl_args=()
 
-  if [ -z "$release_notes_file" ]; then
+  if [ -n "$release_notes_file" ] && [ -n "$release_notes_url" ]; then
+    fail "set only one of VOX_RELEASE_NOTES_FILE or VOX_RELEASE_NOTES_URL"
+  fi
+
+  if [ -z "$release_notes_file" ] && [ -z "$release_notes_url" ]; then
     cat >"$SPARKLE_DIR/${archive_basename%.*}.md" <<NOTES
 # Vox $VOX_RELEASE_VERSION
 
@@ -231,17 +238,42 @@ NOTES
     return 0
   fi
 
-  [ -f "$release_notes_file" ] || fail "release notes file is missing: $release_notes_file"
-  extension="${release_notes_file##*.}"
+  if [ -n "$release_notes_file" ]; then
+    [ -f "$release_notes_file" ] || fail "release notes file is missing: $release_notes_file"
+    extension="${release_notes_file##*.}"
+  else
+    extension="${release_notes_url%%\?*}"
+    extension="${extension%%#*}"
+    extension="${extension##*.}"
+  fi
 
   case "$extension" in
     html|md|txt)
-      cp "$release_notes_file" "$SPARKLE_DIR/${archive_basename%.*}.$extension"
+      output="$SPARKLE_DIR/${archive_basename%.*}.$extension"
       ;;
     *)
-      fail "release notes must be .html, .md, or .txt: $release_notes_file"
+      fail "release notes must be .html, .md, or .txt"
       ;;
   esac
+
+  if [ -n "$release_notes_file" ]; then
+    cp "$release_notes_file" "$output"
+    return 0
+  fi
+
+  if [ -n "${VOX_RELEASE_NOTES_AUTH_HEADER:-}" ]; then
+    curl_args+=(--header "$VOX_RELEASE_NOTES_AUTH_HEADER")
+  elif [ -n "${VOX_RELEASE_NOTES_BEARER_TOKEN:-}" ]; then
+    curl_args+=(--header "Authorization: Bearer $VOX_RELEASE_NOTES_BEARER_TOKEN")
+  elif [ -n "${VOX_RELEASE_NOTES_GITHUB_TOKEN:-}" ]; then
+    curl_args+=(--header "Authorization: Bearer $VOX_RELEASE_NOTES_GITHUB_TOKEN")
+  fi
+
+  if [ "${#curl_args[@]}" -gt 0 ]; then
+    curl --fail --location "${curl_args[@]}" --output "$output" "$release_notes_url"
+  else
+    curl --fail --location --output "$output" "$release_notes_url"
+  fi
 }
 
 create_update_zip() {

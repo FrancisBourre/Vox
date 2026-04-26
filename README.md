@@ -32,6 +32,7 @@ Run the `Publish Sparkle Update` workflow manually with:
 
 | Input | Required | Notes |
 | --- | --- | --- |
+| `publish_request_id` | Optional | Unique id used by the private Vox source wrapper to find the exact workflow run it dispatched. |
 | `dmg_url` | Yes | Public or authenticated HTTPS URL to the signed and notarized Vox DMG. |
 | `release_notes_file` | Optional | Path to committed `.md`, `.html`, or `.txt` release notes in this repository. |
 | `release_notes_url` | Optional | HTTPS URL to `.md`, `.html`, or `.txt` release notes. Used by the private Vox source wrapper. |

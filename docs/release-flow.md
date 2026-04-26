@@ -33,6 +33,10 @@ The `Publish Sparkle Update` workflow runs on a macOS runner. It:
 The workflow publishes the prepared assets to a GitHub Release tagged as
 `v<CFBundleShortVersionString>`.
 
+The source-repo wrapper passes a unique `publish_request_id` input. GitHub uses
+it in the workflow run name so automation can watch the exact dispatch it
+created, even if another update publication starts at the same time.
+
 The app's feed URL is stable:
 
 ```text

@@ -1,8 +1,13 @@
 name: Publish Sparkle Update
+run-name: Publish Sparkle Update ${{ inputs.publish_request_id }}
 
 on:
   workflow_dispatch:
     inputs:
+      publish_request_id:
+        description: "Optional unique id used by release automation to track this run"
+        required: false
+        type: string
       dmg_url:
         description: "HTTPS URL to the signed and notarized Vox DMG"
         required: true
